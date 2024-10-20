@@ -8,16 +8,16 @@ public class Explosion : MonoBehaviour
     [SerializeField] private float time_ = 0;
     [SerializeField] Vector3 maxScale_ = new Vector3(3, 3, 3);
     public int chainNum = 0;//連鎖している数
-    Renderer renderer;
-    Color begin =Color.yellow;//最初の色
+    Renderer renderer = null;
+    Color begin = Color.yellow;//最初の色
     Color end = new Color(1, 0.92f, 0.016f, 0);//最後の色
-    float frame = 0;//フレーム
+    float frame_ = 0.0f;//フレーム値
     // Start is called before the first frame update
     void Start()
     {
         time_ = maxLifeTimer_;
         renderer = gameObject.GetComponent<Renderer>();
-        renderer.material.color = begin;
+        begin = renderer.material.color;
     }
 
     // Update is called once per frame
@@ -39,8 +39,8 @@ public class Explosion : MonoBehaviour
 
     protected virtual void Blend()
     {
-        frame += Time.deltaTime * 3;
-        renderer.material.color = Color.Lerp(begin, end, frame);
+        frame_ += Time.deltaTime * 3;
+        renderer.material.color = Color.Lerp(begin, end, frame_);
         if (renderer.material.color == end)
         {
             gameObject.SetActive(false);

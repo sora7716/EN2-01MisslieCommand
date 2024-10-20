@@ -32,11 +32,27 @@ public class Meteor : MonoBehaviour
     /// </summary>
     [SerializeField] private ScoreEffect scoreEffectPrefab_;
 
+    /// <summary>
+    /// 死んだとき
+    /// </summary>
+    Renderer renderer_;
+    private float beginAlpha = 1.0f;//初期のalpha値
+    private float endAlpha = 0.0f;//目標のalpha値
+    float frame_ = 0.0f;//フレーム値
+    bool isDead_ = false;//死んだかどうかのフラグ
+    [SerializeField] private float maxLifeTimer_ = 1;
+    [SerializeField] private float scaleUpTimer_ = 0;
+    [SerializeField] Vector3 maxScale_ = new Vector3(3, 3, 3);
+    bool isScaleUpFinished_ = false;
     // Start is called before the first frame update
     void Start()
     {
+        //レンダラーの初期化
+        renderer_ = GetComponent<Renderer>();
+        //リジットボディの初期化
         rb_ = GetComponent<Rigidbody2D>();
         SetupVelocity();
+        scaleUpTimer_ = maxLifeTimer_;
     }
     /// <summary>
     /// 生成元から必要な情報を引き継ぐ
@@ -100,7 +116,7 @@ public class Meteor : MonoBehaviour
         //GameManagerにダメージを通知
         gameManager_.Damage(1);
         //自身を自滅
-        Destroy(gameObject);
+        isDead_ = true;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -116,9 +132,40 @@ public class Meteor : MonoBehaviour
             Fall();
         }
     }
+
+    private void Blend()
+    {
+        rb_.velocity = Vector2.zero;
+        frame_ += Time.deltaTime * 3;
+        Color color = renderer_.material.color;
+        color.a = Mathf.Lerp(beginAlpha, endAlpha, frame_);
+        renderer_.material.color = color;
+        if (renderer_.material.color.a == endAlpha)
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    protected virtual void ScaleUp()
+    {
+        transform.localScale = maxScale_ * (1.0f - scaleUpTimer_ / maxLifeTimer_);
+        if (transform.localScale == maxScale_)
+        {
+            isScaleUpFinished_ = true;
+        }
+    }
     // Update is called once per frame
     void Update()
     {
+        if (isDead_)
+        {
+            scaleUpTimer_ -= Time.deltaTime / 2.0f;
+            ScaleUp();
+            if (isScaleUpFinished_)
+            {
+                Blend();
 
+            }
+        }
     }
 }
