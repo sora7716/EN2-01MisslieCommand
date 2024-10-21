@@ -65,7 +65,7 @@ public class GameManager : MonoBehaviour
 
         //生成位置Listの要素数が1以上であることを確認
         Assert.IsTrue(spawnPositions_.Count > 0, "spawnPositions_に要素が一つもありません。");
-        foreach(var t in spawnPositions_)
+        foreach (var t in spawnPositions_)
         {
             //各要素にNullが含まれていないことを確認
             Assert.IsNotNull(t, "spawnPositions_にNullが含まれています");
@@ -95,21 +95,22 @@ public class GameManager : MonoBehaviour
 
         //ミサイルを生成
         Vector3 launchPosition = new Vector3(0, -3, 0);
+        distance_[0] = clicPosition - shotPoints_[0].position;
+        int num = 0;
         for (int i = 1; i < shotPoints_.Length; i++)
         {
-            distance_[i-1] = clicPosition - shotPoints_[i].position;
-            if (
-                Mathf.Abs(distance_[i - 1].x) < Mathf.Abs(distance_[i].x) &&
-                Mathf.Abs(distance_[i - 1].y) < Mathf.Abs(distance_[i].y)
-                )
+            distance_[i] = clicPosition - shotPoints_[i].position;
+            if (Mathf.Abs(distance_[i - 1].x) < Mathf.Abs(distance_[i].x))
             {
-                launchPosition = distance_[i - 1];
+                num = i - 1;
+                break;
             }
             else
             {
-                launchPosition = distance_[i];
+                num = i;
             }
         }
+        launchPosition = shotPoints_[num].position;
         Missile missile = Instantiate(missilePrefab_, launchPosition, Quaternion.identity);
         missile.SetUp(reticle);
     }
@@ -118,7 +119,7 @@ public class GameManager : MonoBehaviour
     /// スコアの加算
     /// </summary>
     /// <param name="point">加算するスコア</param>
-    public void AddScore(int point) 
+    public void AddScore(int point)
     {
         score_ += point;
         scoreText_.SetScore(score_);
@@ -128,9 +129,9 @@ public class GameManager : MonoBehaviour
     /// ダメージの加算
     /// </summary>
     /// <param name="point"></param>
-    public void Damage(int point) 
+    public void Damage(int point)
     {
-        life_-=point;
+        life_ -= point;
         //UIの更新
         UpdateLifeBar();
     }
@@ -161,17 +162,17 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// ライフの初期化
     /// </summary>
-    private void ResetLife() 
+    private void ResetLife()
     {
         life_ = maxLife_;
         //UIの更新
-        UpdateLifeBar() ;
+        UpdateLifeBar();
     }
 
     /// <summary>
     /// ライフバーの更新
     /// </summary>
-    private void UpdateLifeBar() 
+    private void UpdateLifeBar()
     {
         //最大体力と現在体力の割合で何割かを算出
         float lifeRatio = Mathf.Clamp01(life_ / maxLife_);
