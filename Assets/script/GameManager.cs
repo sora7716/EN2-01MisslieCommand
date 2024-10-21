@@ -49,12 +49,13 @@ public class GameManager : MonoBehaviour
     private float life_;
 
     ////ミサイルの発射位置
-    //[SerializeField,Header("Missile")] 
-    ////発射位置
-    //private Transform[] shotPoints_;
-
+    [SerializeField, Header("Missile")]
+    //発射位置
+    private Transform[] shotPoints_;
+    private Vector3[] distance_;
     void Start()
     {
+        distance_ = new Vector3[shotPoints_.Length];
         //「MainCamera」というタグを持つゲームオブジェクトを検索
         GameObject mainCamraObject = GameObject.FindGameObjectWithTag("MainCamera");
         //Nullではないことを確認
@@ -94,6 +95,21 @@ public class GameManager : MonoBehaviour
 
         //ミサイルを生成
         Vector3 launchPosition = new Vector3(0, -3, 0);
+        for (int i = 1; i < shotPoints_.Length; i++)
+        {
+            distance_[i-1] = clicPosition - shotPoints_[i].position;
+            if (
+                Mathf.Abs(distance_[i - 1].x) < Mathf.Abs(distance_[i].x) &&
+                Mathf.Abs(distance_[i - 1].y) < Mathf.Abs(distance_[i].y)
+                )
+            {
+                launchPosition = distance_[i - 1];
+            }
+            else
+            {
+                launchPosition = distance_[i];
+            }
+        }
         Missile missile = Instantiate(missilePrefab_, launchPosition, Quaternion.identity);
         missile.SetUp(reticle);
     }

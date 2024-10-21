@@ -38,6 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -688,6 +689,10 @@ MonoBehaviour:
   scoreText_: {fileID: 2062150818}
   lifeBar_: {fileID: 2137414398}
   maxLife_: 10
+  shotPoints_:
+  - {fileID: 2015282873}
+  - {fileID: 84673980}
+  - {fileID: 433046508}
 --- !u!4 &1243943687
 Transform:
   m_ObjectHideFlags: 0

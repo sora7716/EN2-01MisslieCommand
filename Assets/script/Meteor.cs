@@ -35,7 +35,7 @@ public class Meteor : MonoBehaviour
     /// <summary>
     /// 死んだとき
     /// </summary>
-    Renderer renderer_;
+    private Renderer renderer_;
     private float beginAlpha = 1.0f;//初期のalpha値
     private float endAlpha = 0.0f;//目標のalpha値
     float frame_ = 0.0f;//フレーム値
@@ -43,7 +43,8 @@ public class Meteor : MonoBehaviour
     [SerializeField] private float maxLifeTimer_ = 1;
     [SerializeField] private float scaleUpTimer_ = 0;
     [SerializeField] Vector3 maxScale_ = new Vector3(3, 3, 3);
-    bool isScaleUpFinished_ = false;
+    private bool isScaleUpFinished_ = false;
+    private ParticleSystem particleSystem_;
     // Start is called before the first frame update
     void Start()
     {
@@ -52,6 +53,7 @@ public class Meteor : MonoBehaviour
         //リジットボディの初期化
         rb_ = GetComponent<Rigidbody2D>();
         SetupVelocity();
+        //スケールアップタイマーにマックスライフタイマーを代入
         scaleUpTimer_ = maxLifeTimer_;
     }
     /// <summary>
@@ -135,7 +137,6 @@ public class Meteor : MonoBehaviour
 
     private void Blend()
     {
-        rb_.velocity = Vector2.zero;
         frame_ += Time.deltaTime * 3;
         Color color = renderer_.material.color;
         color.a = Mathf.Lerp(beginAlpha, endAlpha, frame_);
@@ -148,8 +149,15 @@ public class Meteor : MonoBehaviour
 
     protected virtual void ScaleUp()
     {
+        if (particleSystem_ != null){
+            particleSystem_.Stop();
+        }
+        rb_.velocity = Vector2.zero;
         transform.localScale = maxScale_ * (1.0f - scaleUpTimer_ / maxLifeTimer_);
-        if (transform.localScale == maxScale_)
+        if (
+            transform.localScale.x >= maxScale_.x&&
+            transform.localScale.y >= maxScale_.y
+            )
         {
             isScaleUpFinished_ = true;
         }
