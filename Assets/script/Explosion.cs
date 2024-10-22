@@ -6,24 +6,24 @@ public class Explosion : MonoBehaviour
 {
     [SerializeField] private float maxLifeTimer_ = 1;
     [SerializeField] private float time_ = 0;
-    [SerializeField] Vector3 maxScale_ = new Vector3(3, 3, 3);
+    [SerializeField] Vector3 maxScale_ = new Vector3(1f,1f,1f);
     public int chainNum = 0;//連鎖している数
-    Renderer renderer = null;
-    Color begin = Color.yellow;//最初の色
-    Color end = new Color(1, 0.92f, 0.016f, 0);//最後の色
+    Renderer renderer_;
+    private float beginAlpha = 1.0f;//最初の色
+    private float endAlpha = 0.0f;//最後の色
     float frame_ = 0.0f;//フレーム値
     // Start is called before the first frame update
     void Start()
     {
         time_ = maxLifeTimer_;
-        renderer = gameObject.GetComponent<Renderer>();
-        begin = renderer.material.color;
+        renderer_ = gameObject.GetComponent<Renderer>();
+        gameObject.transform.localScale=Vector3.zero;
     }
 
     // Update is called once per frame
     void Update()
     {
-        time_ -= Time.deltaTime;
+        time_ -= Time.deltaTime*2;
         ScaleUp();
         if (time_ > 0)
         {
@@ -39,11 +39,22 @@ public class Explosion : MonoBehaviour
 
     protected virtual void Blend()
     {
-        frame_ += Time.deltaTime * 3;
-        renderer.material.color = Color.Lerp(begin, end, frame_);
-        if (renderer.material.color == end)
+        transform.localScale = maxScale_;
+        frame_ += Time.deltaTime * 5;
+        Color color = renderer_.material.color;
+        color.a = Mathf.Lerp(beginAlpha, endAlpha, frame_);
+        renderer_.material.color = color;
+        if (renderer_.material.color.a == endAlpha)
         {
-            gameObject.SetActive(false);
+            Destroy(gameObject);
         }
     }
+
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    if (collision.CompareTag("Meteor"))
+    //    {
+    //        chainNum++;
+    //    }
+    //}
 }

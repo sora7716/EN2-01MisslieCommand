@@ -19,6 +19,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject reticlePrefab_;
     //ミサイル
     [SerializeField] private Missile missilePrefab_;
+    //アイテム
+    [SerializeField]private List<ItemBase> itemPrefabs_;
 
     //隕石の生成関係
     [SerializeField, Header("MeteorSpawner")]
@@ -29,7 +31,7 @@ public class GameManager : MonoBehaviour
     //隕石の生成までの時間
     private float meteorTimer_;
     //隕石の位置
-    [SerializeField] private List<Transform> spawnPositions_;
+    [SerializeField] private List<Transform> meteorSpawnPositions_;
 
     //スコア関係
     [SerializeField, Header("ScoreUISettings")]
@@ -48,11 +50,21 @@ public class GameManager : MonoBehaviour
     //現在の体力
     private float life_;
 
-    ////ミサイルの発射位置
+    //ミサイルの発射位置
     [SerializeField, Header("Missile")]
     //発射位置
     private Transform[] shotPoints_;
     private Vector3[] distance_;
+
+    //アイテム
+    [SerializeField, Header("Item")]
+    //アイテムの生成の時間間隔
+    private float itemInterval_ = 1f;
+    //アイテムの生成までの時間
+    private float itemTimer_;
+    //アイテムの位置
+    [SerializeField] private List<Transform> itemSpawnPositions_;
+
     void Start()
     {
         distance_ = new Vector3[shotPoints_.Length];
@@ -64,8 +76,8 @@ public class GameManager : MonoBehaviour
         Assert.IsTrue(mainCamraObject.TryGetComponent(out mainCamera_), "MainCameraにCameraコンポーネントがありません");
 
         //生成位置Listの要素数が1以上であることを確認
-        Assert.IsTrue(spawnPositions_.Count > 0, "spawnPositions_に要素が一つもありません。");
-        foreach (var t in spawnPositions_)
+        Assert.IsTrue(meteorSpawnPositions_.Count > 0, "spawnPositions_に要素が一つもありません。");
+        foreach (var t in meteorSpawnPositions_)
         {
             //各要素にNullが含まれていないことを確認
             Assert.IsNotNull(t, "spawnPositions_にNullが含まれています");
@@ -81,6 +93,7 @@ public class GameManager : MonoBehaviour
         //クリックをしたら爆発を生成
         if (Input.GetMouseButtonDown(0)) { GenerateMissile(); }
         UpdateMeteorTimer();
+        UpdateItemTimer();
     }
 
     /// <summary>
@@ -94,7 +107,7 @@ public class GameManager : MonoBehaviour
         GameObject reticle = Instantiate(reticlePrefab_, clicPosition, Quaternion.identity);
 
         //ミサイルを生成
-        Vector3 launchPosition = new Vector3(0, -3, 0);
+        Vector3 launchPosition = Vector3.zero;
         distance_[0] = clicPosition - shotPoints_[0].position;
         int num = 0;
         for (int i = 1; i < shotPoints_.Length; i++)
@@ -152,11 +165,35 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void GenerateMeteor()
     {
-        int max = spawnPositions_.Count;
+        int max = meteorSpawnPositions_.Count;
         int posIndex = Random.Range(0, max);
-        Vector3 spawnPosition = spawnPositions_[posIndex].position;
+        Vector3 spawnPosition = meteorSpawnPositions_[posIndex].position;
         Meteor meteor = Instantiate(meteorPrefab_, spawnPosition, Quaternion.identity);
         meteor.Setup(ground_, this, explosionPrefab_);
+    }
+
+    /// <summary>
+    ///アイテムタイムの更新
+    /// </summary>
+    private void UpdateItemTimer()
+    {
+        itemTimer_ -= Time.deltaTime;
+        if (itemTimer_ > 0) { return; }
+        itemTimer_ += itemInterval_;
+        GenerateItem();
+    }
+
+    /// <summary>
+    /// アイテムの生成
+    /// </summary>
+    private void GenerateItem()
+    {
+        int spawnPosMaxIndex = itemSpawnPositions_.Count;
+        int posIndex = Random.Range(0, spawnPosMaxIndex);
+        int itemTypeMaxIndex = itemPrefabs_.Count;
+        int typeIndex = Random.Range(0, itemTypeMaxIndex);
+        Vector3 spawnPosition = itemSpawnPositions_[posIndex].position;
+        ItemBase item = Instantiate(itemPrefabs_[typeIndex], spawnPosition,Quaternion.identity);
     }
 
     /// <summary>
