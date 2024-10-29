@@ -18,6 +18,7 @@ public class Meteor : MonoBehaviour
     /// <summary>
     /// 爆発のプレハブ。生成元から受け取る
     /// </summary>
+    private List<Explosion> explosionPrefabs_;
     private Explosion explosionPrefab_;
 
     /// <summary>
@@ -59,11 +60,11 @@ public class Meteor : MonoBehaviour
     /// <summary>
     /// 生成元から必要な情報を引き継ぐ
     /// </summary>
-    public void Setup(BoxCollider2D ground, GameManager gameManager, Explosion explosionPrefab)
+    public void Setup(BoxCollider2D ground, GameManager gameManager, List<Explosion> explosionPrefab)
     {
         gameManager_ = gameManager;
-        groundCollider_ = ground;
-        explosionPrefab_ = explosionPrefab;
+        groundCollider_ = ground;       
+        explosionPrefabs_ = explosionPrefab;
     }
 
     /// <summary>
@@ -127,6 +128,18 @@ public class Meteor : MonoBehaviour
         if (collision.gameObject.CompareTag("Explosion") &&
             collision.TryGetComponent(out explosion))
         {
+            explosionPrefab_ = explosionPrefabs_[0];
+            Explosion(explosion);
+        }else if (collision.gameObject.CompareTag("ClusterExplosion") &&
+            collision.TryGetComponent(out explosion))
+        {
+            explosionPrefab_ = explosionPrefabs_[1];
+            Explosion(explosion);
+        }
+        else if (collision.gameObject.CompareTag("GiganticExplosion") &&
+            collision.TryGetComponent(out explosion))
+        {
+            explosionPrefab_ = explosionPrefabs_[2];
             Explosion(explosion);
         }
         if (collision.gameObject.CompareTag("Ground"))

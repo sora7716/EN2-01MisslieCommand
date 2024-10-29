@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8597445149198040156}
   - component: {fileID: 168525117645941610}
   m_Layer: 0
-  m_Name: GiganticExplosion
+  m_Name: SmallExplosion
   m_TagString: GiganticExplosion
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -116,5 +116,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxLifeTimer_: 1
   time_: 0
-  maxScale_: {x: 8, y: 8, z: 8}
+  maxScale_: {x: 3, y: 3, z: 3}
   chainNum: 0

@@ -13,8 +13,8 @@ GameObject:
   - component: {fileID: 8597445149198040156}
   - component: {fileID: 168525117645941610}
   m_Layer: 0
-  m_Name: GiganticExplosion
-  m_TagString: GiganticExplosion
+  m_Name: ClusterExplosion
+  m_TagString: ClusterExplosion
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -76,7 +76,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0.9811321, g: 0.07775002, b: 0.29406914, a: 1}
+  m_Color: {r: 0.15452035, g: 0.98039216, b: 0.07843135, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -116,5 +116,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxLifeTimer_: 1
   time_: 0
-  maxScale_: {x: 8, y: 8, z: 8}
+  maxScale_: {x: 3, y: 3, z: 3}
   chainNum: 0

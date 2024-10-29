@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     //プレハブの設定
     [SerializeField, Header("Prefabs")]
     //爆発
-    private Explosion explosionPrefab_;
+    private List<Explosion> explosionPrefabs_;
     //隕石
     [SerializeField] private Meteor meteorPrefab_;
     //レティクル
@@ -169,7 +169,7 @@ public class GameManager : MonoBehaviour
         int posIndex = Random.Range(0, max);
         Vector3 spawnPosition = meteorSpawnPositions_[posIndex].position;
         Meteor meteor = Instantiate(meteorPrefab_, spawnPosition, Quaternion.identity);
-        meteor.Setup(ground_, this, explosionPrefab_);
+        meteor.Setup(ground_, this, explosionPrefabs_);
     }
 
     /// <summary>
