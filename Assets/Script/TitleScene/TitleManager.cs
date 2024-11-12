@@ -15,6 +15,7 @@ public class TitleManager : MonoBehaviour
     /// </summary>
     [SerializeField, Header("PressStart")] PressStartControl pressStartControl_;
 
+    bool isPress_ = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,16 +25,28 @@ public class TitleManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!titleBarControl_.IsStart())
+        if (Input.GetMouseButtonDown(0) && !titleBarControl_.IsStart())
+        {
+            if (!isPress_)
+            {
+                titleBarControl_.ResetFrame();
+                pressStartControl_.ResetFrame();
+            }
+            isPress_ = true;
+        }
+        if (!isPress_)
         {
             //pressStartÇìoèÍ
             pressStartControl_.SetIsStart(true);
-            if (Input.GetMouseButtonDown(0)&&!pressStartControl_.IsStart())
-            {
-                titleBarControl_.SetIsRevers(true);
-                pressStartControl_.SetIsRevers(true);
-                //SceneManager.LoadScene("GameScene");
-            }
         }
+        if (isPress_)
+        {
+            pressStartControl_.SetIsStart(false);
+            titleBarControl_.SetIsStart(false);
+            titleBarControl_.SetIsRevers(true);
+            pressStartControl_.SetIsRevers(true);
+            // SceneManager.LoadScene("GameScene");
+        }
+       
     }
 }

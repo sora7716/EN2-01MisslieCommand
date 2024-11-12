@@ -48,11 +48,7 @@ public class TitleBarControl : MonoBehaviour
         }
         else
         {
-            isStart_ = false;//目標の位置に行くフラグを終了
-            if (!isRevers_)
-            {
-                frame_ = 0.0f;
-            }
+            isStart_ = false;
         }
 
         //戻すときの時間を計算
@@ -138,5 +134,31 @@ public class TitleBarControl : MonoBehaviour
     public void SetIsRevers(bool isRevers)
     {
         isRevers_ = isRevers;
+    }
+
+    /// <summary>
+    /// 元に戻すフラグのゲッター
+    /// </summary>
+    /// <returns></returns>
+    public bool IsRevers()
+    {
+        return isRevers_;
+    }
+
+    /// <summary>
+    /// 目標の位置に行くフラグのセッター
+    /// </summary>
+    /// <param name="isStart"></param>
+    public void SetIsStart(bool isStart)
+    {
+        isStart_ = isStart; 
+    }
+
+    /// <summary>
+    /// フレームの初期化
+    /// </summary>
+    public void ResetFrame()
+    {
+        frame_ = 0.0f;
     }
 }

@@ -41,29 +41,20 @@ public class PressStartControl : MonoBehaviour
     void Update()
     {
         //時間を加算
-        if (frame_ < endSecond_ / 2.0f && isStart_)
+        if (frame_ < endSecond_ && isStart_)
         {
             frame_ += Time.deltaTime / endSecond_;
         }
         else
         {
             isStart_ = false;//目標の位置に行くフラグを終了
-            if (!isRevers_)
-            {
-                frame_ = 0.0f;
-            }
         }
 
         //戻すときの時間を計算
-        if (frame_ < endSecond_ / 2.0f && isRevers_)
+        if (frame_ < endSecond_ && isRevers_)
         {
             frame_ += Time.deltaTime / endSecond_;
         }
-        else
-        {
-            isRevers_ = false;//元の位置に戻すフラグを終了
-        }
-
         //移動させる
         if (isStart_)
         {
@@ -93,7 +84,7 @@ public class PressStartControl : MonoBehaviour
     /// <returns></returns>
     public bool SetIsStart(bool isStart)
     {
-        return isStart_=isStart;
+        return isStart_ = isStart;
     }
 
     /// <summary>
@@ -103,5 +94,22 @@ public class PressStartControl : MonoBehaviour
     public void SetIsRevers(bool isRevers)
     {
         isRevers_ = isRevers;
+    }
+
+    /// <summary>
+    /// フレームの初期化
+    /// </summary>
+    public void ResetFrame()
+    {
+        frame_ = 0.0f;
+    }
+
+    /// <summary>
+    /// 元に戻すフラグのゲッター
+    /// </summary>
+    /// <returns></returns>
+    public bool isRevers()
+    {
+        return isRevers_;
     }
 }

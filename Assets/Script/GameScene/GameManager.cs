@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
     //ミサイル
     [SerializeField] private Missile missilePrefab_;
     //アイテム
-    [SerializeField]private List<ItemBase> itemPrefabs_;
+    [SerializeField] private List<ItemBase> itemPrefabs_;
 
     //隕石の生成関係
     [SerializeField, Header("MeteorSpawner")]
@@ -79,10 +79,13 @@ public class GameManager : MonoBehaviour
         Assert.IsTrue(meteorSpawnPositions_.Count > 0, "spawnPositions_に要素が一つもありません。");
         foreach (var t in meteorSpawnPositions_)
         {
-            //各要素にNullが含まれていないことを確認
-            Assert.IsNotNull(t, "spawnPositions_にNullが含まれています");
+            if (t == null)
+            {
+                //各要素にNullが含まれていないことを確認
+                Assert.IsNotNull(t, "spawnPositions_にNullが含まれています");
+            }
         }
-
+        mainCamera_.TryGetComponent(out mainCamera_);  
         //体力の初期化
         ResetLife();
     }
@@ -193,7 +196,7 @@ public class GameManager : MonoBehaviour
         int itemTypeMaxIndex = itemPrefabs_.Count;
         int typeIndex = Random.Range(0, itemTypeMaxIndex);
         Vector3 spawnPosition = itemSpawnPositions_[posIndex].position;
-        ItemBase item = Instantiate(itemPrefabs_[typeIndex], spawnPosition,Quaternion.identity);
+        ItemBase item = Instantiate(itemPrefabs_[typeIndex], spawnPosition, Quaternion.identity);
     }
 
     /// <summary>
