@@ -65,6 +65,10 @@ public class GameManager : MonoBehaviour
     //アイテムの位置
     [SerializeField] private List<Transform> itemSpawnPositions_;
 
+    /// <summary>
+    /// フェードのコントローラー
+    /// </summary>
+    [SerializeField, Header("FadeImage")] private FadeControl fadeControl_;
     void Start()
     {
         distance_ = new Vector3[shotPoints_.Length];
@@ -85,18 +89,28 @@ public class GameManager : MonoBehaviour
                 Assert.IsNotNull(t, "spawnPositions_にNullが含まれています");
             }
         }
-        mainCamera_.TryGetComponent(out mainCamera_);  
+        mainCamera_.TryGetComponent(out mainCamera_);
         //体力の初期化
         ResetLife();
+        //フェードインを開始する
+        fadeControl_.SetIsFadeIn(true);
     }
 
     // Update is called once per frame
     void Update()
     {
-        //クリックをしたら爆発を生成
-        if (Input.GetMouseButtonDown(0)) { GenerateMissile(); }
-        UpdateMeteorTimer();
-        UpdateItemTimer();
+        //フェードが終了したらゲームの処理を開始する
+        if (fadeControl_.isFinished())
+        {
+            //クリックをしたら爆発を生成
+            if (Input.GetMouseButtonDown(0)) { GenerateMissile(); }
+            UpdateMeteorTimer();
+            UpdateItemTimer();
+        }
+        else
+        {
+            fadeControl_.Fadein();
+        }
     }
 
     /// <summary>
