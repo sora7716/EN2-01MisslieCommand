@@ -28,7 +28,7 @@ public class ScoreText : MonoBehaviour
     /// <param name="score">新しいスコア値</param>
     public void SetScore(int score)
     {
-       score_=score;
+        score_ = score;
         UpdateScoreText();
     }
 
@@ -41,9 +41,23 @@ public class ScoreText : MonoBehaviour
         scoreText_.text = $"SCORE:{score_:000000}";
     }
 
+    /// <summary>
+    /// スコアのセーブ
+    /// </summary>
+    public void SeveScore()
+    {
+        GameScore.kScore = score_;
+    }
+
     // Update is called once per frame
     void Update()
     {
 
     }
 }
+
+public static class GameScore
+{
+    public static int kScore = 0;//ゲーム全体でスコアを格納
+}
+

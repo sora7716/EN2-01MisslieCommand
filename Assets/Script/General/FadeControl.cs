@@ -6,26 +6,27 @@ using UnityEngine.UI;
 public class FadeControl : MonoBehaviour
 {
     //フェードアウトの開始フラグ
-    [SerializeField] bool isFadeOut_ = false;
+    bool isFadeOut_ = false;
     //フェードインの開始フラグ
-    [SerializeField] bool isFadeIn_ = false;
+    bool isFadeIn_ = false;
     //フレーム
     float frame_ = 0.0f;
     //何秒後に終わらせる
     [SerializeField] float endSecond_ = 2.0f;
     //image
-    [SerializeField] Image image_;
+    Image image_;
     //終了フラグ
     bool isFinished_ = false;
     // Start is called before the first frame update
     void Start()
     {
+        image_ = GetComponent<Image>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     /// <summary>
@@ -55,7 +56,7 @@ public class FadeControl : MonoBehaviour
     {
         if (frame_ <= 0.0f)
         {
-            image_.material.color = Vector4.one-new Vector4(1,1,1,0);
+            image_.material.color = Vector4.one - new Vector4(1, 1, 1, 0);
         }
         if (isFadeIn_)
         {

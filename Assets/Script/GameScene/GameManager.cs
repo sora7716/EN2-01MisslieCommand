@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -106,6 +107,10 @@ public class GameManager : MonoBehaviour
             if (Input.GetMouseButtonDown(0)) { GenerateMissile(); }
             UpdateMeteorTimer();
             UpdateItemTimer();
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                SceneManager.LoadScene("EndScene");
+            }
         }
         else
         {
@@ -164,6 +169,12 @@ public class GameManager : MonoBehaviour
         life_ -= point;
         //UIの更新
         UpdateLifeBar();
+        //スコアを保存
+        if (life_ <= 0.0f)
+        {
+            scoreText_.SeveScore();
+            SceneManager.LoadScene("EndScene");
+        }
     }
 
     /// <summary>
