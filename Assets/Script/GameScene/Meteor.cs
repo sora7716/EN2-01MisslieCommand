@@ -219,13 +219,15 @@ public class Meteor : MonoBehaviour
                 Blend();//大きくなりきったらブレンドする
             }
         }
-
-        //スピードをあげる
-        if (isSpeedUp_)
+        else
         {
-            fallSpeedMin_ = 10;
-            fallSpeedMax_ = 30;
-            SpeedUp();//スピードだけをあげる
+            //スピードをあげる
+            if (isSpeedUp_)
+            {
+                fallSpeedMin_ = 10;
+                fallSpeedMax_ = 30;
+                SpeedUp();//スピードだけをあげる
+            }
         }
     }
 

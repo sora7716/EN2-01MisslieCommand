@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
 {
     //メインカメラ
     private Camera mainCamera_;
+    [SerializeField] private Shake mainCameraShake_;
 
     //プレハブの設定
     [SerializeField, Header("Prefabs")]
@@ -80,6 +81,12 @@ public class GameManager : MonoBehaviour
     /// </summary>
     [SerializeField, Header("Ground")] private Shake groundShake_;
 
+    //死んだかどうかのフラグ
+    bool isDead_ = false;
+
+    //ゲームがスタートするかどうかのフラグ
+    bool isGameStart_ = false;
+
     void Start()
     {
         distance_ = new Vector3[shotPoints_.Length];
@@ -110,8 +117,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //フェードが終了したらゲームの処理を開始する
-        if (fadeControl_.isFinished())
+        if (isGameStart_)
         {
             //クリックをしたら爆発を生成
             if (Input.GetMouseButtonDown(0)) { GenerateMissile(); }
@@ -121,10 +127,25 @@ public class GameManager : MonoBehaviour
                 isItemPop_ = true;
             }
             UpdateItemTimer();
+            if (isDead_)
+            {
+                Dead();
+                if (fadeControl_.isFinished())
+                {
+                   SceneManager.LoadScene("EndScene");
+                }
+            }
         }
         else
         {
-            fadeControl_.Fadein();
+            fadeControl_.FadeIn();
+        }
+        //フェードが終了したらゲームの処理を開始する
+        if (fadeControl_.isFinished())
+        {
+            //ゲームをスタートさせる
+            isGameStart_ = true;
+            fadeControl_.SetIsFinished(false);
         }
     }
 
@@ -198,9 +219,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            meteorTimer_ = 0.3f;//インターバルを設定
-            meteor_.SetIsSpeedUp(true);//スピードアップフラグを設定
-            scoreText_.SaveScore();//スコアを保存
+            isDead_ = true;
         }
         GenerateMeteor();
     }
@@ -260,5 +279,19 @@ public class GameManager : MonoBehaviour
         float lifeRatio = Mathf.Clamp01(life_ / maxLife_);
         //割合をlifeBar_へ伝え、UIに反映してもらう
         lifeBar_.SetGaugeRatio(lifeRatio);
+    }
+
+    /// <summary>
+    /// 死んだときの処理
+    /// </summary>
+    private void Dead()
+    {
+        mainCameraShake_.SetIsShake(true);//シェイクするフラグを立てる
+        mainCameraShake_.ShakeStart();//シェイクをスタートさせる
+        meteorTimer_ = 0.3f;//インターバルを設定
+        meteor_.SetIsSpeedUp(true);//スピードアップフラグを設定
+        scoreText_.SaveScore();//スコアを保存
+        fadeControl_.SetIsFadeOut(true);
+        fadeControl_.FadeOut(Color.white-new Color(0.0f,0.0f,0.0f,1.0f), Color.white);
     }
 }

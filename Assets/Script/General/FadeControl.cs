@@ -10,7 +10,7 @@ public class FadeControl : MonoBehaviour
     //フェードインの開始フラグ
     bool isFadeIn_ = false;
     //フレーム
-    float frame_ = 0.0f;
+    [SerializeField]float frame_ = 0.0f;
     //何秒後に終わらせる
     [SerializeField] float endSecond_ = 2.0f;
     //image
@@ -32,43 +32,42 @@ public class FadeControl : MonoBehaviour
     /// <summary>
     /// フェードアウト
     /// </summary>
-    public void FadeOut()
+    /// <param name="beginColor">最初のカラー</param>
+    /// <param name="endColor">最後のカラー</param>
+    public void FadeOut(Color beginColor, Color endColor)
     {
-        if (frame_ <= 0.0f)
-        {
-            image_.material.color = Vector4.zero;
-        }
+
         if (isFadeOut_)
         {
             if (frame_ < endSecond_)
             {
                 frame_ += Time.deltaTime / endSecond_;
+                image_.color = Vector4.Lerp(beginColor, endColor, frame_);
             }
             else
             {
+                isFadeOut_ = false;
                 isFinished_ = true;
+                frame_ = 0.0f;
             }
-            image_.material.color = Vector4.Lerp(Vector4.zero, Vector4.one, frame_);
         }
     }
 
-    public void Fadein()
+    public void FadeIn()
     {
-        if (frame_ <= 0.0f)
-        {
-            image_.material.color = Vector4.one - new Vector4(1, 1, 1, 0);
-        }
         if (isFadeIn_)
         {
             if (frame_ < endSecond_)
             {
                 frame_ += Time.deltaTime / endSecond_;
+                image_.color = Vector4.Lerp(Color.black , Vector4.zero, frame_);
             }
             else
             {
+                isFadeIn_ = false;
                 isFinished_ = true;
+                frame_ = 0.0f;
             }
-            image_.material.color = Vector4.Lerp(Vector4.one - new Vector4(1, 1, 1, 0), Vector4.zero, frame_);
         }
     }
 
@@ -99,10 +98,31 @@ public class FadeControl : MonoBehaviour
     }
 
     /// <summary>
-    /// imageを透明にする
+    /// 透明にする(透明にした値を返す)
     /// </summary>
-    public void Invisible()
+    /// <param name="color">好きな色</param>
+    public Color Invisible(Color color)
     {
-        image_.material.color = Vector4.zero;
+        color.a = 0.0f;
+        image_.color = color;//イメージを透明にする
+        return color;
+    }
+
+    /// <summary>
+    /// フェードが終わる時間変更(秒)
+    /// </summary>
+    /// <param name="endSecond">終わる時間</param>
+    public void SetEndSecond(float endSecond)
+    {
+        endSecond_ = endSecond;
+    }
+
+    /// <summary>
+    /// フェード完了フラグをへし折る
+    /// </summary>
+    /// <param name="isFinished">完了フラグ</param>
+    public void SetIsFinished(bool isFinished)
+    {
+        isFinished_= isFinished;
     }
 }

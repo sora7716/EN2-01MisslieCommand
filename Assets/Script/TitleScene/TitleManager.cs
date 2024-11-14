@@ -16,13 +16,14 @@ public class TitleManager : MonoBehaviour
     [SerializeField, Header("PressStart")] private PressStartControl pressStartControl_;
 
     [SerializeField, Header("FadeImage")] private FadeControl fadeControl_;
+    Color beginFadeColor_;//フェードするときの最初の色
 
     bool isPress_ = false;
     // Start is called before the first frame update
     void Start()
     {
         //フェード用のimageを透明にする
-        fadeControl_.Invisible();
+       beginFadeColor_= fadeControl_.Invisible(Color.black);
     }
 
     // Update is called once per frame
@@ -55,7 +56,7 @@ public class TitleManager : MonoBehaviour
             pressStartControl_.SetIsRevers(true);
             //フェードアウトを開始
             fadeControl_.SetIsFadeOut(true);
-            fadeControl_.FadeOut();
+            fadeControl_.FadeOut(beginFadeColor_, Color.black);
         }
         //フェードが終了したらシーンを切り替え
         if (fadeControl_.isFinished())
