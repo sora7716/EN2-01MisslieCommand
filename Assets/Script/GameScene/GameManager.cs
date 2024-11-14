@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
@@ -33,6 +34,8 @@ public class GameManager : MonoBehaviour
     private float meteorTimer_;
     //隕石の位置
     [SerializeField] private List<Transform> meteorSpawnPositions_;
+    //隕石単体
+    Meteor meteor_;
 
     //スコア関係
     [SerializeField, Header("ScoreUISettings")]
@@ -65,11 +68,18 @@ public class GameManager : MonoBehaviour
     private float itemTimer_;
     //アイテムの位置
     [SerializeField] private List<Transform> itemSpawnPositions_;
-
+    //アイテムをポップさせる
+    bool isItemPop_ = false;
     /// <summary>
     /// フェードのコントローラー
     /// </summary>
     [SerializeField, Header("FadeImage")] private FadeControl fadeControl_;
+
+    /// <summary>
+    /// 地面
+    /// </summary>
+    [SerializeField, Header("Ground")] private Shake groundShake_;
+
     void Start()
     {
         distance_ = new Vector3[shotPoints_.Length];
@@ -106,11 +116,11 @@ public class GameManager : MonoBehaviour
             //クリックをしたら爆発を生成
             if (Input.GetMouseButtonDown(0)) { GenerateMissile(); }
             UpdateMeteorTimer();
-            UpdateItemTimer();
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (score_ > 500)
             {
-                SceneManager.LoadScene("EndScene");
+                isItemPop_ = true;
             }
+            UpdateItemTimer();
         }
         else
         {
@@ -166,15 +176,13 @@ public class GameManager : MonoBehaviour
     /// <param name="point"></param>
     public void Damage(int point)
     {
+        //ライフを減らす
         life_ -= point;
+        //ダメージをくらった時のシェイク
+        groundShake_.SetIsShake(true);//フラグを立てる
+        groundShake_.ShakeStart();//シェイクをスタート
         //UIの更新
         UpdateLifeBar();
-        //スコアを保存
-        if (life_ <= 0.0f)
-        {
-            scoreText_.SeveScore();
-            SceneManager.LoadScene("EndScene");
-        }
     }
 
     /// <summary>
@@ -182,9 +190,18 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void UpdateMeteorTimer()
     {
-        meteorTimer_ -= Time.deltaTime;
-        if (meteorTimer_ > 0) { return; }
-        meteorTimer_ += meteorInterval_;
+        meteorTimer_ -= Time.deltaTime;//タイマーを減らす
+        if (meteorTimer_ > 0) { return; }//タイマーがゼロじゃなければ抜ける
+        if (life_ > 0.0f)//ライフがゼロじゃなければ
+        {
+            meteorTimer_ += meteorInterval_;//インターバルを設定
+        }
+        else
+        {
+            meteorTimer_ = 0.3f;//インターバルを設定
+            meteor_.SetIsSpeedUp(true);//スピードアップフラグを設定
+            scoreText_.SaveScore();//スコアを保存
+        }
         GenerateMeteor();
     }
 
@@ -196,8 +213,8 @@ public class GameManager : MonoBehaviour
         int max = meteorSpawnPositions_.Count;
         int posIndex = Random.Range(0, max);
         Vector3 spawnPosition = meteorSpawnPositions_[posIndex].position;
-        Meteor meteor = Instantiate(meteorPrefab_, spawnPosition, Quaternion.identity);
-        meteor.Setup(ground_, this, explosionPrefabs_);
+        meteor_ = Instantiate(meteorPrefab_, spawnPosition, Quaternion.identity);
+        meteor_.Setup(ground_, this, explosionPrefabs_);
     }
 
     /// <summary>
@@ -206,7 +223,7 @@ public class GameManager : MonoBehaviour
     private void UpdateItemTimer()
     {
         itemTimer_ -= Time.deltaTime;
-        if (itemTimer_ > 0) { return; }
+        if (itemTimer_ > 0 || !isItemPop_) { return; }
         itemTimer_ += itemInterval_;
         GenerateItem();
     }

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Shake : MonoBehaviour
+public class ShakeRect : MonoBehaviour
 {
     //カメラの初期位置
     Vector3 firstPos_ = Vector3.zero;
@@ -13,15 +13,18 @@ public class Shake : MonoBehaviour
     //シェイクの幅
     [SerializeField] private Vector2 randomRangeX_ = new Vector2(-0.5f, 0.5f);
     [SerializeField] private Vector2 randomRangeY_ = new Vector2(-0.5f, 0.5f);
-    [SerializeField] private float z_ = 0.0f;
 
     //シェイクの行っている時間
     [SerializeField] float shakeTime_ = 2.0f;
     float frame_ = 0.0f;
+
+    //レクト
+    RectTransform rectTransform_;
     // Start is called before the first frame update
     void Start()
     {
-        firstPos_ = transform.position;
+        rectTransform_ = GetComponent<RectTransform>(); 
+        firstPos_ = rectTransform_.anchoredPosition;
     }
 
     // Update is called once per frame
@@ -58,13 +61,13 @@ public class Shake : MonoBehaviour
             randomPos = new Vector3(
                 Random.Range(randomRangeX_.x, randomRangeX_.y),
                 Random.Range(randomRangeY_.x, randomRangeY_.y),
-                z_
+                -10.0f
             );
-            transform.position = randomPos;
+            rectTransform_.anchoredPosition = randomPos;
         }
         else
         {
-            transform.position = firstPos_;
+            rectTransform_.anchoredPosition = firstPos_;
             frame_ = 0.0f;
         }
     }

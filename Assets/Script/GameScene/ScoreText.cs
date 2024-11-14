@@ -29,22 +29,22 @@ public class ScoreText : MonoBehaviour
     public void SetScore(int score)
     {
         score_ = score;
-        UpdateScoreText();
+        UpdateScoreText(score_);
     }
 
     /// <summary>
     /// テキストの更新
     /// </summary>
-    public void UpdateScoreText()
+    public void UpdateScoreText(int sciore)
     {
         //数値は8桁0詰め
-        scoreText_.text = $"SCORE:{score_:000000}";
+        scoreText_.text = $"SCORE:{sciore:000000}";
     }
 
     /// <summary>
     /// スコアのセーブ
     /// </summary>
-    public void SeveScore()
+    public void SaveScore()
     {
         GameScore.kScore = score_;
     }

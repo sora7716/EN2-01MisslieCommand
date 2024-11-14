@@ -6,24 +6,28 @@ public class Explosion : MonoBehaviour
 {
     [SerializeField] private float maxLifeTimer_ = 1;
     [SerializeField] private float time_ = 0;
-    [SerializeField] Vector3 maxScale_ = new Vector3(1f,1f,1f);
+    [SerializeField] Vector3 maxScale_ = new Vector3(1f, 1f, 1f);
     public int chainNum = 0;//連鎖している数
     Renderer renderer_;
     private float beginAlpha = 1.0f;//最初の色
     private float endAlpha = 0.0f;//最後の色
     float frame_ = 0.0f;//フレーム値
+    /// <summary>
+    /// ブレンドする時間
+    /// </summary>
+    [SerializeField] private float blendSpeed_ = 5.0f;
     // Start is called before the first frame update
     void Start()
     {
         time_ = maxLifeTimer_;
         renderer_ = gameObject.GetComponent<Renderer>();
-        gameObject.transform.localScale=Vector3.zero;
+        gameObject.transform.localScale = Vector3.zero;
     }
 
     // Update is called once per frame
     void Update()
     {
-        time_ -= Time.deltaTime*2;
+        time_ -= Time.deltaTime * 2;
         ScaleUp();
         if (time_ > 0)
         {
@@ -40,7 +44,7 @@ public class Explosion : MonoBehaviour
     protected virtual void Blend()
     {
         transform.localScale = maxScale_;
-        frame_ += Time.deltaTime * 5;
+        frame_ += Time.deltaTime * blendSpeed_;
         Color color = renderer_.material.color;
         color.a = Mathf.Lerp(beginAlpha, endAlpha, frame_);
         renderer_.material.color = color;

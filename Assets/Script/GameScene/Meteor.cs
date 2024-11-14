@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections.LowLevel.Unsafe;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -14,6 +16,16 @@ public class Meteor : MonoBehaviour
     /// 最高落下速度
     /// </summary>
     [SerializeField] private float fallSpeedMax_ = 3;
+
+    /// <summary>
+    /// スピードアップフラグ
+    /// </summary>
+    bool isSpeedUp_ = false;
+
+    /// <summary>
+    /// 向かう方向
+    /// </summary>
+    Vector3 direction_ = Vector3.zero;
 
     /// <summary>
     /// 爆発のプレハブ。生成元から受け取る
@@ -63,7 +75,7 @@ public class Meteor : MonoBehaviour
     public void Setup(BoxCollider2D ground, GameManager gameManager, List<Explosion> explosionPrefab)
     {
         gameManager_ = gameManager;
-        groundCollider_ = ground;       
+        groundCollider_ = ground;
         explosionPrefabs_ = explosionPrefab;
     }
 
@@ -80,9 +92,18 @@ public class Meteor : MonoBehaviour
 
         float targetX = Mathf.Lerp(left, right, Random.Range(0.0f, 1.0f));
         Vector3 target = new Vector3(targetX, top, 0.0f);
-        Vector3 directioin = (target - transform.position).normalized;
+        direction_ = (target - transform.position).normalized;
         float fallSpeed = Random.Range(fallSpeedMin_, fallSpeedMax_);
-        rb_.velocity = directioin * fallSpeed;
+        rb_.velocity = direction_ * fallSpeed;
+    }
+
+    /// <summary>
+    /// スピードアップ
+    /// </summary>
+    private void SpeedUp()
+    {
+        float fallSpeed = Random.Range(fallSpeedMin_, fallSpeedMax_);
+        rb_.velocity = direction_ * fallSpeed;
     }
 
     /// <summary>
@@ -130,7 +151,8 @@ public class Meteor : MonoBehaviour
         {
             explosionPrefab_ = explosionPrefabs_[0];
             Explosion(explosion);
-        }else if (collision.gameObject.CompareTag("ClusterExplosion") &&
+        }
+        else if (collision.gameObject.CompareTag("ClusterExplosion") &&
             collision.TryGetComponent(out explosion))
         {
             explosionPrefab_ = explosionPrefabs_[1];
@@ -160,15 +182,23 @@ public class Meteor : MonoBehaviour
         }
     }
 
+    //fallSpeedを変更するセッター
+    public void SetFallSpeed(float min, float max)
+    {
+        fallSpeedMin_ = min;
+        fallSpeedMax_ = max;
+    }
+
     protected virtual void ScaleUp()
     {
-        if (particleSystem_ != null){
+        if (particleSystem_ != null)
+        {
             particleSystem_.Stop();
         }
         rb_.velocity = Vector2.zero;
         transform.localScale = maxScale_ * (1.0f - scaleUpTimer_ / maxLifeTimer_);
         if (
-            transform.localScale.x >= maxScale_.x&&
+            transform.localScale.x >= maxScale_.x &&
             transform.localScale.y >= maxScale_.y
             )
         {
@@ -178,15 +208,33 @@ public class Meteor : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //消えるとき
         if (isDead_)
         {
+            //スケールを大きくする
             scaleUpTimer_ -= Time.deltaTime / 2.0f;
             ScaleUp();
             if (isScaleUpFinished_)
             {
-                Blend();
-
+                Blend();//大きくなりきったらブレンドする
             }
         }
+
+        //スピードをあげる
+        if (isSpeedUp_)
+        {
+            fallSpeedMin_ = 10;
+            fallSpeedMax_ = 30;
+            SpeedUp();//スピードだけをあげる
+        }
+    }
+
+    /// <summary>
+    /// スピードアップするフラグのセッター
+    /// </summary>
+    /// <param name="isSpeedUp">スピードアップ</param>
+    public void SetIsSpeedUp(bool isSpeedUp)
+    {
+        isSpeedUp_ = isSpeedUp;
     }
 }

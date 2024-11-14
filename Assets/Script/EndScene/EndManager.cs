@@ -8,6 +8,8 @@ public class EndManager : MonoBehaviour
     [SerializeField, Header("ScoreUISettings")]
     //スコア表示用テキスト
     private ScoreText scoreText_;
+    //スコアのシェイク
+    [SerializeField] private ShakeRect shakeRect_;
     //スコア
     private int score_;
     //スコアを加算する時間(秒)
@@ -27,22 +29,43 @@ public class EndManager : MonoBehaviour
     {
         if (GameScore.kScore > score_)
         {
+            //加算フラグを立てる
             isAddScore_ = true;
         }
         else
         {
+            //加算フラグをへし折る
             isAddScore_ = false;
         }
+        //加算フラグがたったら
         if (isAddScore_)
         {
+            //インターバルを設けて加算する
             if (scoreAddFrame_ < scoreAddInterval_)
             {
                 scoreAddFrame_ += Time.deltaTime / scoreAddInterval_;
             }
             else
             {
+                //100ずつ加算
                 AddScore(100);
+                //シェイクを開始フラグを立てる
+                shakeRect_.SetIsShake(true);
+                //シェイクを開始
+                shakeRect_.ShakeStart();
+                //加算のフレームをゼロに初期化
                 scoreAddFrame_ = 0.0f;
+            }
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                score_ = GameScore.kScore;
+                scoreText_.UpdateScoreText(score_);
+                //シェイクを開始フラグを立てる
+                shakeRect_.SetIsShake(true);
+                //シェイクを開始
+                shakeRect_.ShakeStart();
+                isAddScore_ = false;
             }
         }
     }
