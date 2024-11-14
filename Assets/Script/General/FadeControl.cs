@@ -10,7 +10,7 @@ public class FadeControl : MonoBehaviour
     //フェードインの開始フラグ
     bool isFadeIn_ = false;
     //フレーム
-    [SerializeField]float frame_ = 0.0f;
+    float frame_ = 0.0f;
     //何秒後に終わらせる
     [SerializeField] float endSecond_ = 2.0f;
     //image
@@ -26,7 +26,7 @@ public class FadeControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+ 
     }
 
     /// <summary>

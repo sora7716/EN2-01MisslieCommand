@@ -60,6 +60,7 @@ public class GameManager : MonoBehaviour
     //発射位置
     private Transform[] shotPoints_;
     private Vector3[] distance_;
+    [SerializeField] private RemainingMissile remainingMissile_;
 
     //アイテム
     [SerializeField, Header("Item")]
@@ -112,6 +113,8 @@ public class GameManager : MonoBehaviour
         ResetLife();
         //フェードインを開始する
         fadeControl_.SetIsFadeIn(true);
+        //フェードを表示させる
+        fadeControl_.gameObject.SetActive(true);
     }
 
     // Update is called once per frame
@@ -120,7 +123,14 @@ public class GameManager : MonoBehaviour
         if (isGameStart_)
         {
             //クリックをしたら爆発を生成
-            if (Input.GetMouseButtonDown(0)) { GenerateMissile(); }
+            if (Input.GetMouseButtonDown(0))
+            {
+                if (remainingMissile_.GetMissileCount() >= 0)
+                {
+                    GenerateMissile();
+                }
+                remainingMissile_.MissileShot();
+            }
             UpdateMeteorTimer();
             if (score_ > 500)
             {
@@ -132,7 +142,7 @@ public class GameManager : MonoBehaviour
                 Dead();
                 if (fadeControl_.isFinished())
                 {
-                   SceneManager.LoadScene("EndScene");
+                    SceneManager.LoadScene("EndScene");
                 }
             }
         }
@@ -292,6 +302,6 @@ public class GameManager : MonoBehaviour
         meteor_.SetIsSpeedUp(true);//スピードアップフラグを設定
         scoreText_.SaveScore();//スコアを保存
         fadeControl_.SetIsFadeOut(true);
-        fadeControl_.FadeOut(Color.white-new Color(0.0f,0.0f,0.0f,1.0f), Color.white);
+        fadeControl_.FadeOut(Color.white - new Color(0.0f, 0.0f, 0.0f, 1.0f), Color.white);
     }
 }
