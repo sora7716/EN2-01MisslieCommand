@@ -72,6 +72,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private List<Transform> itemSpawnPositions_;
     //アイテムをポップさせる
     bool isItemPop_ = false;
+    //回復アイテム
+    [SerializeField] RegeneItem regeneItem_;
     /// <summary>
     /// フェードのコントローラー
     /// </summary>
@@ -128,7 +130,7 @@ public class GameManager : MonoBehaviour
         if (isGameStart_)
         {
             //クリックをしたら爆発を生成
-            if (Input.GetMouseButtonDown(0)&&!isDead_)
+            if (Input.GetMouseButtonDown(0) && !isDead_)
             {
                 if (remainingMissile_.GetMissileCount() >= 0)
                 {
@@ -136,18 +138,26 @@ public class GameManager : MonoBehaviour
                 }
                 remainingMissile_.MissileShot();
             }
+            //隕石を召喚
             UpdateMeteorTimer();
+            //ある程度スコアが行ったらアイテムを召喚
             if (score_ > 500)
             {
                 isItemPop_ = true;
             }
             UpdateItemTimer();
+            //回復フラグがtrueでライフがmazLife_以下だった場合
+            if (regeneItem_.IsRecovery() && life_ < maxLife_)
+            {
+                Recovery();//回復させる
+            }
+            //死んだときの処理
             if (isDead_)
             {
                 Dead();
                 if (fadeControl_.isFinished())
                 {
-                    SceneManager.LoadScene("EndScene");
+                    SceneManager.LoadScene("EndScene");//シーンを切り替え
                 }
             }
         }
@@ -311,5 +321,17 @@ public class GameManager : MonoBehaviour
         scoreText_.SaveScore();//スコアを保存
         fadeControl_.SetEndSecond(deadFadeEndSecond_);//フェードのエンド時間を設定
         fadeControl_.FadeOut(Color.white - new Color(0.0f, 0.0f, 0.0f, 1.0f), Color.white);//フェードアウトをスタート
+    }
+
+    public void Recovery()
+    {
+        if (life_ + regeneItem_.GetAddLife() < maxLife_)//上限以下ならAddLife分回復させる
+        {
+            life_ += regeneItem_.GetAddLife();//回復させる
+        }
+        else
+        {
+            life_ = maxLife_;//上限を超えていたならmaxLife_にする
+        }
     }
 }

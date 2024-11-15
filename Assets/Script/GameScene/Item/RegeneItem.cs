@@ -8,10 +8,17 @@ public class RegeneItem : ItemBase
     [SerializeField]
     private Explosion giganticExplosionPrefab_;
 
+    [SerializeField]private float addLife_=3.0f;
+
     //’ŠÛƒNƒ‰ƒX‚ÌÀ‘•
     public override void Get()
     {
         Instantiate(giganticExplosionPrefab_, transform.position, Quaternion.identity);
         Destroy(gameObject);
+    }
+
+    public float GetAddLife()
+    {
+        return addLife_;
     }
 }

@@ -8,6 +8,7 @@ TagManager:
   - Ground
   - ClusterExplosion
   - GiganticExplosion
+  - RegeneItem
   layers:
   - Default
   - TransparentFX

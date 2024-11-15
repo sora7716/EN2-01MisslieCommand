@@ -17,6 +17,8 @@ public abstract class ItemBase : MonoBehaviour
     protected Camera camera_;
     //自機のサイズ確認用
     protected Collider2D collider_;
+    //回復するかのフラグ
+    bool isRecovery_ = false;
     //初期化  
     private void Awake()
     {
@@ -47,7 +49,14 @@ public abstract class ItemBase : MonoBehaviour
     //衝突判定
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Explosion")) { Get(); }
+        if (collision.CompareTag("Explosion")) { 
+            Get();
+            //回復させる
+            if (gameObject.CompareTag("RegeneItem"))
+            {
+                isRecovery_ = true;
+            }
+        }
     }
     //アイテム取得の処理の抽象メソッド。派生クラスで実装が必須。
     //基底クラスでは実装しないので、最後が();であることに注意。
@@ -61,5 +70,14 @@ public abstract class ItemBase : MonoBehaviour
         result.y = scalar.y * Mathf.Sin(theta.y) + center.y;
         result.z = scalar.z * Mathf.Sin(theta.z) + center.z;
         return result;
+    }
+
+    /// <summary>
+    /// 回復するかのフラグ
+    /// </summary>
+    /// <returns></returns>
+    public bool IsRecovery()
+    {
+        return isRecovery_;
     }
 }
