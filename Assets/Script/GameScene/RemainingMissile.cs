@@ -60,7 +60,7 @@ public class RemainingMissile : MonoBehaviour
     {
         if (coolTimer_ < coolTimeInterval_)
         {
-            coolTimer_ += Time.deltaTime / coolTimeInterval_;//クールタイム
+            coolTimer_ += Time.deltaTime ;//クールタイム
         }
         else
         {

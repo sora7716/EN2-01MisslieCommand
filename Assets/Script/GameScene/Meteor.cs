@@ -167,6 +167,8 @@ public class Meteor : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             Fall();
+            Collider2D collider=GetComponent<Collider2D>();
+            collider.enabled = false;
         }
     }
 

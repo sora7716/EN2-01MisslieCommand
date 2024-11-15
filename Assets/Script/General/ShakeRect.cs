@@ -27,12 +27,6 @@ public class ShakeRect : MonoBehaviour
         firstPos_ = rectTransform_.anchoredPosition;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        ShakeStart();
-    }
-
     /// <summary>
     /// シェイクのフラグのセッター
     /// </summary>

@@ -82,6 +82,11 @@ public class GameManager : MonoBehaviour
     /// </summary>
     [SerializeField, Header("Ground")] private Shake groundShake_;
 
+    //ゲームの終了関係
+    [SerializeField, Header("DeadFhase")]
+    private float deadFadeEndSecond_ = 2.0f;//死んだときのフェードの時間
+    [SerializeField] private float deadMeteorInterval_ = 1.0f;//死んだときの隕石の落ちるインターバル
+    [SerializeField] private int fallMeteorNum_ = 1;//何回隕石を落とすか
     //死んだかどうかのフラグ
     bool isDead_ = false;
 
@@ -123,7 +128,7 @@ public class GameManager : MonoBehaviour
         if (isGameStart_)
         {
             //クリックをしたら爆発を生成
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0)&&!isDead_)
             {
                 if (remainingMissile_.GetMissileCount() >= 0)
                 {
@@ -223,13 +228,16 @@ public class GameManager : MonoBehaviour
     {
         meteorTimer_ -= Time.deltaTime;//タイマーを減らす
         if (meteorTimer_ > 0) { return; }//タイマーがゼロじゃなければ抜ける
-        if (life_ > 0.0f)//ライフがゼロじゃなければ
-        {
-            meteorTimer_ += meteorInterval_;//インターバルを設定
-        }
-        else
+        meteorTimer_ += meteorInterval_;//インターバルを設定
+
+        if (life_ <= 0.0f)//ライフがゼロならば
         {
             isDead_ = true;
+            fallMeteorNum_--;
+            if (fallMeteorNum_ <= 0)
+            {
+                fadeControl_.SetIsFadeOut(true);//フェードアウトのフラグを立てる
+            }
         }
         GenerateMeteor();
     }
@@ -298,10 +306,10 @@ public class GameManager : MonoBehaviour
     {
         mainCameraShake_.SetIsShake(true);//シェイクするフラグを立てる
         mainCameraShake_.ShakeStart();//シェイクをスタートさせる
-        meteorTimer_ = 0.3f;//インターバルを設定
+        meteorInterval_ = deadMeteorInterval_;//インターバルを設定
         meteor_.SetIsSpeedUp(true);//スピードアップフラグを設定
         scoreText_.SaveScore();//スコアを保存
-        fadeControl_.SetIsFadeOut(true);
-        fadeControl_.FadeOut(Color.white - new Color(0.0f, 0.0f, 0.0f, 1.0f), Color.white);
+        fadeControl_.SetEndSecond(deadFadeEndSecond_);//フェードのエンド時間を設定
+        fadeControl_.FadeOut(Color.white - new Color(0.0f, 0.0f, 0.0f, 1.0f), Color.white);//フェードアウトをスタート
     }
 }

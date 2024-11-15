@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class EndManager : MonoBehaviour
 {
@@ -18,16 +19,28 @@ public class EndManager : MonoBehaviour
     float scoreAddFrame_ = 0.0f;
     //スコアを加算するかどうかのフラグ
     bool isAddScore_ = false;
+
+    //ゲームオーバー関係
+    [SerializeField, Header("GameOver")] private EasingRect gameOver_;
+
+    //シーン遷移していいかどうかのフラグ
+    bool isSceneChange_ = false;
+    //シーンが切り替わるまでの時間
+    [SerializeField] private float sceneChangeTime_ = 1.0f;
+
     // Start is called before the first frame update
     void Start()
     {
-
+        //目標地点に行く線形補間を開始するフラグを立てる
+        gameOver_.SetIsStart(true);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (GameScore.kScore > score_)
+        //線形補間を開始
+        gameOver_.LerpStart();
+        if (GameScore.kScore > score_ && gameOver_.IsFinished())
         {
             //加算フラグを立てる
             isAddScore_ = true;
@@ -63,11 +76,27 @@ public class EndManager : MonoBehaviour
                 scoreText_.UpdateScoreText(score_);
                 //シェイクを開始フラグを立てる
                 shakeRect_.SetIsShake(true);
-                //シェイクを開始
-                shakeRect_.ShakeStart();
                 isAddScore_ = false;
             }
         }
+        //シェイクを開始
+        shakeRect_.ShakeStart();
+        //スコアがすべて加算しきったらシーンを切り替えられるようにする
+        if (GameScore.kScore == score_ && gameOver_.IsFinished())
+        {
+            isSceneChange_ = true;//シーン切り替えOK
+        }
+        if (isSceneChange_)
+        {
+            //シーン切り替えるまでの待ち時間
+            sceneChangeTime_ -= Time.deltaTime;
+            if (Input.GetMouseButton(0) && sceneChangeTime_ < 0.0f)
+            {
+                //切り替えるまでの時間が0より小さくなったらとボダンを押したらシーンを切り替える
+                SceneManager.LoadScene("TitleScene");
+            }
+        }
+
     }
 
     /// <summary>
@@ -79,4 +108,5 @@ public class EndManager : MonoBehaviour
         score_ += point;
         scoreText_.SetScore(score_);
     }
+
 }
