@@ -1628,8 +1628,8 @@ MonoBehaviour:
   mainCameraShake_: {fileID: 519420033}
   explosionPrefabs_:
   - {fileID: 168525117645941610, guid: b3b73715d76125a40afa0c8fd2d76373, type: 3}
-  - {fileID: 168525117645941610, guid: 9584710ff12bc5e47abcce3705a4d9dd, type: 3}
   - {fileID: 168525117645941610, guid: 0638ad588dbea724dbfb3c835fde0179, type: 3}
+  - {fileID: 168525117645941610, guid: 6d2b8f5fd4f70cb4285857971ab46f0c, type: 3}
   meteorPrefab_: {fileID: 7120547288238305773, guid: a909fc63040677a4ca663f7f93f527bc, type: 3}
   reticlePrefab_: {fileID: 4118830586389823946, guid: b75d82824587a0c4584fa0eeb5b3754e, type: 3}
   missilePrefab_: {fileID: -4977680990277584217, guid: 23a633d306fc9054698d876e9ad652d2, type: 3}
@@ -1650,7 +1650,7 @@ MonoBehaviour:
   - {fileID: 1427822053}
   - {fileID: 1627302500}
   remainingMissile_: {fileID: 2821527}
-  itemInterval_: 120
+  itemInterval_: 30
   itemSpawnPositions_:
   - {fileID: 130890318}
   - {fileID: 1449472110}

@@ -32,7 +32,7 @@ public abstract class ItemBase : MonoBehaviour
         center_ += new Vector3(speed_ * Time.deltaTime, 0.0f, 0.0f);
         theta_ += 1.0f * Time.deltaTime;
         transform.position = LissajousCurve(new Vector3(theta_ * 3.0f + Mathf.PI / 6.0f, theta_ * 4.0f, 1.0f), center_, new Vector3(2.0f, 2.0f, 1.0f));
-        gameObject.transform.localEulerAngles += new Vector3(0.0f, 0.0f, 1.0f);
+        gameObject.transform.localEulerAngles += new Vector3(0.0f, 0.0f, 0.1f);
         //画面外の確認
         //ワールド座標上のカメラ右端をカメラから算出
         float worldScreenRight = camera_.orthographicSize * camera_.aspect;

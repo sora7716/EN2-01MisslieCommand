@@ -95,7 +95,7 @@ public class GameManager : MonoBehaviour
     //SE
     [SerializeField, Header("SE")]
     public AudioSource audioSource_;//発生源
-    [SerializeField]private AudioClip missileSE_;//ミサイルのSE
+    [SerializeField] private AudioClip missileSE_;//ミサイルのSE
 
     //ゲームがスタートするかどうかのフラグ
     bool isGameStart_ = false;
@@ -108,7 +108,8 @@ public class GameManager : MonoBehaviour
         //Nullではないことを確認
         Assert.IsNotNull(mainCamraObject, "MainCamraが見つかりませんでした");
         //Cameraコンポーネントが存在し、取得できることを確認
-        Assert.IsTrue(mainCamraObject.TryGetComponent(out mainCamera_), "MainCameraにCameraコンポーネントがありません");
+        bool isGetCameraComponent = mainCamraObject.TryGetComponent(out mainCamera_);
+        Assert.IsTrue(isGetCameraComponent, "MainCameraにCameraコンポーネントがありません");
 
         //生成位置Listの要素数が1以上であることを確認
         Assert.IsTrue(meteorSpawnPositions_.Count > 0, "spawnPositions_に要素が一つもありません。");
@@ -148,7 +149,7 @@ public class GameManager : MonoBehaviour
             //隕石を召喚
             UpdateMeteorTimer();
             //ある程度スコアが行ったらアイテムを召喚
-            if (score_ > 500)
+            if (score_ > 2000)
             {
                 isItemPop_ = true;
             }
@@ -282,7 +283,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void GenerateItem()
     {
-        int spawnPosMaxIndex = itemSpawnPositions_.Count;
+        int spawnPosMaxIndex = itemSpawnPositions_.Count - 1;
         int posIndex = Random.Range(0, spawnPosMaxIndex);
         int itemTypeMaxIndex = itemPrefabs_.Count;
         int typeIndex = Random.Range(0, itemTypeMaxIndex);
