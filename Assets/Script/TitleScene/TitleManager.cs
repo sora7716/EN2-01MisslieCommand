@@ -18,12 +18,17 @@ public class TitleManager : MonoBehaviour
     [SerializeField, Header("FadeImage")] private FadeControl fadeControl_;
     Color beginFadeColor_;//フェードするときの最初の色
 
+    //押されたかどうか
     bool isPress_ = false;
+
+    //選択されたときに流すSE
+    [SerializeField] private AudioSource audioSource_;
+    [SerializeField] private AudioClip selectSE_;//選択したときの音
     // Start is called before the first frame update
     void Start()
     {
         //フェード用のimageを透明にする
-       beginFadeColor_= fadeControl_.Invisible(Color.black);
+        beginFadeColor_ = fadeControl_.Invisible(Color.black);
     }
 
     // Update is called once per frame
@@ -32,6 +37,7 @@ public class TitleManager : MonoBehaviour
         //押された瞬間でなおかつタイトルバーの目標地点に行くフラグがfalseだったら
         if (Input.GetMouseButtonDown(0) && !titleBarControl_.IsStart())
         {
+            audioSource_.PlayOneShot(selectSE_);
             //押されたフラグかfalseだったら
             if (!isPress_)
             {

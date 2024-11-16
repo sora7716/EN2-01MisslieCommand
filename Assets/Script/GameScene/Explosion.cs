@@ -16,6 +16,9 @@ public class Explosion : MonoBehaviour
     /// ブレンドする時間
     /// </summary>
     [SerializeField] private float blendSpeed_ = 5.0f;
+
+    //回復するかのフラグ
+    [SerializeField] bool isRecovery_ = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -54,11 +57,21 @@ public class Explosion : MonoBehaviour
         }
     }
 
-    //private void OnTriggerEnter2D(Collider2D collision)
-    //{
-    //    if (collision.CompareTag("Meteor"))
-    //    {
-    //        chainNum++;
-    //    }
-    //}
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        //回復させる
+        if (gameObject.CompareTag("RegeneItem"))
+        {
+            isRecovery_ = true;
+        }
+    }
+
+    /// <summary>
+    /// 回復するかのフラグ
+    /// </summary>
+    /// <returns></returns>
+    public bool IsRecovery()
+    {
+        return isRecovery_;
+    }
 }

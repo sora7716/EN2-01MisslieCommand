@@ -58,6 +58,13 @@ public class Meteor : MonoBehaviour
     [SerializeField] Vector3 maxScale_ = new Vector3(3, 3, 3);
     private bool isScaleUpFinished_ = false;
     private ParticleSystem particleSystem_;
+
+    /// <summary>
+    /// SE
+    /// </summary>
+    AudioSource audioSource_;
+    [SerializeField] private AudioClip meteorSE_;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -68,6 +75,7 @@ public class Meteor : MonoBehaviour
         SetupVelocity();
         //スケールアップタイマーにマックスライフタイマーを代入
         scaleUpTimer_ = maxLifeTimer_;
+        audioSource_ = GetComponent<AudioSource>();//オーディオソースをゲットしてくる
     }
     /// <summary>
     /// 生成元から必要な情報を引き継ぐ
@@ -167,6 +175,7 @@ public class Meteor : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             Fall();
+            audioSource_.PlayOneShot(meteorSE_);//爆発したときの音
             Collider2D collider=GetComponent<Collider2D>();
             collider.enabled = false;
         }

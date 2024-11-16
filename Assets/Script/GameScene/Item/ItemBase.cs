@@ -17,8 +17,6 @@ public abstract class ItemBase : MonoBehaviour
     protected Camera camera_;
     //自機のサイズ確認用
     protected Collider2D collider_;
-    //回復するかのフラグ
-    bool isRecovery_ = false;
     //初期化  
     private void Awake()
     {
@@ -33,7 +31,7 @@ public abstract class ItemBase : MonoBehaviour
         //移動処理
         center_ += new Vector3(speed_ * Time.deltaTime, 0.0f, 0.0f);
         theta_ += 1.0f * Time.deltaTime;
-        transform.position = LissajousCurve(new Vector3(theta_ * 3.0f + Mathf.PI / 6.0f, theta_ *4.0f, 1.0f), center_, new Vector3(2.0f, 2.0f, 1.0f));
+        transform.position = LissajousCurve(new Vector3(theta_ * 3.0f + Mathf.PI / 6.0f, theta_ * 4.0f, 1.0f), center_, new Vector3(2.0f, 2.0f, 1.0f));
         gameObject.transform.localEulerAngles += new Vector3(0.0f, 0.0f, 1.0f);
         //画面外の確認
         //ワールド座標上のカメラ右端をカメラから算出
@@ -49,13 +47,9 @@ public abstract class ItemBase : MonoBehaviour
     //衝突判定
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Explosion")) { 
+        if (collision.CompareTag("Explosion"))
+        {
             Get();
-            //回復させる
-            if (gameObject.CompareTag("RegeneItem"))
-            {
-                isRecovery_ = true;
-            }
         }
     }
     //アイテム取得の処理の抽象メソッド。派生クラスで実装が必須。
@@ -70,14 +64,5 @@ public abstract class ItemBase : MonoBehaviour
         result.y = scalar.y * Mathf.Sin(theta.y) + center.y;
         result.z = scalar.z * Mathf.Sin(theta.z) + center.z;
         return result;
-    }
-
-    /// <summary>
-    /// 回復するかのフラグ
-    /// </summary>
-    /// <returns></returns>
-    public bool IsRecovery()
-    {
-        return isRecovery_;
     }
 }

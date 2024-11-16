@@ -8,13 +8,13 @@ public class RegeneItem : ItemBase
     [SerializeField]
     private Explosion giganticExplosionPrefab_;
 
-    [SerializeField]private float addLife_=3.0f;
+    //回復するライフ
+    [SerializeField] private float addLife_ = 3.0f;
 
     //抽象クラスの実装
     public override void Get()
     {
         Instantiate(giganticExplosionPrefab_, transform.position, Quaternion.identity);
-        Destroy(gameObject);
     }
 
     public float GetAddLife()

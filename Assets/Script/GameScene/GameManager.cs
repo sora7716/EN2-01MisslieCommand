@@ -92,6 +92,11 @@ public class GameManager : MonoBehaviour
     //死んだかどうかのフラグ
     bool isDead_ = false;
 
+    //SE
+    [SerializeField, Header("SE")]
+    public AudioSource audioSource_;//発生源
+    [SerializeField]private AudioClip missileSE_;//ミサイルのSE
+
     //ゲームがスタートするかどうかのフラグ
     bool isGameStart_ = false;
 
@@ -134,6 +139,8 @@ public class GameManager : MonoBehaviour
             {
                 if (remainingMissile_.GetMissileCount() >= 0)
                 {
+                    //ミサイル発射の音を流す
+                    audioSource_.PlayOneShot(missileSE_);
                     GenerateMissile();
                 }
                 remainingMissile_.MissileShot();
@@ -146,11 +153,6 @@ public class GameManager : MonoBehaviour
                 isItemPop_ = true;
             }
             UpdateItemTimer();
-            //回復フラグがtrueでライフがmazLife_以下だった場合
-            if (regeneItem_.IsRecovery() && life_ < maxLife_)
-            {
-                Recovery();//回復させる
-            }
             //死んだときの処理
             if (isDead_)
             {

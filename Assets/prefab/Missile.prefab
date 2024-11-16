@@ -4925,3 +4925,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   explosionPrefab_: {fileID: 168525117645941610, guid: b3b73715d76125a40afa0c8fd2d76373, type: 3}
   speed_: 10
+  gameManager_: {fileID: 8047840242210700488, guid: 397a6ead7161ba944b7e06fbc70d7e4e, type: 3}
